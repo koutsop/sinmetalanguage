@@ -84,10 +84,10 @@
 
 
 
-	//#include "SINString.h"
-	//#include "SINASTNode.h"
-	//#include "SINParserManage.h"
-	//#include "LexAndBisonParseArguments.h"
+	#include "SINString.h"
+	#include "SINASTNodes.h"
+	#include "SINParserManage.h"
+	#include "ParseArguments.h"
 	
 
 	////////////////////////////////////////////////////////////////////////
@@ -98,13 +98,12 @@
 	////////////////////////////////////////////////////////////////////////
 	// functions definitions
 	
-	int yyerror (char const* yaccProvidedMessage);
-	//int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMessage);
+	int yyerror (SIN::ParseArguments & parseArg, char const* yaccProvidedMessage);
 	int PrepareForFile(const char * filePath);
 	int PrepareForString(void);
 
 
-	int yylex(SIN::LexAndBisonParseArguments & fabpa);
+	int yylex(SIN::ParseArguments & parseArg);
 	//
 	extern int yylineno;
 	extern char* yytext;
@@ -245,10 +244,9 @@ typedef union YYSTYPE
 {
 
 
-    char *	stringV;
+    char *			stringV;
     double			realV;
-    void *			AST;
-    //SIN::ASTNode *	AST;
+    SIN::ASTNode *	AST;
 
 
 
@@ -596,18 +594,18 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   105,   105,   110,   111,   116,   117,   118,   119,   120,
-     121,   122,   123,   124,   125,   130,   131,   132,   133,   134,
-     135,   136,   137,   138,   139,   140,   141,   142,   143,   144,
-     145,   146,   149,   153,   159,   160,   161,   162,   163,   167,
-     168,   172,   173,   180,   181,   182,   183,   184,   185,   186,
-     187,   188,   193,   194,   195,   196,   197,   201,   202,   203,
-     204,   205,   209,   210,   211,   212,   213,   214,   215,   219,
-     220,   221,   222,   223,   224,   231,   232,   233,   234,   238,
-     243,   244,   248,   249,   256,   257,   260,   261,   264,   265,
-     266,   267,   270,   271,   275,   276,   277,   281,   282,   291,
-     291,   293,   293,   298,   302,   303,   307,   308,   316,   317,
-     321,   326,   327,   330,   330,   334,   334,   338,   339
+       0,   103,   103,   108,   109,   114,   115,   116,   117,   118,
+     119,   120,   121,   122,   123,   128,   129,   130,   131,   132,
+     133,   134,   135,   136,   137,   138,   139,   140,   141,   142,
+     143,   144,   147,   151,   157,   158,   159,   160,   161,   165,
+     166,   170,   171,   178,   179,   180,   181,   182,   183,   184,
+     185,   186,   191,   192,   193,   194,   195,   199,   200,   201,
+     202,   203,   207,   208,   209,   210,   211,   212,   213,   217,
+     218,   219,   220,   221,   222,   229,   230,   231,   232,   236,
+     241,   242,   246,   247,   254,   255,   258,   259,   262,   263,
+     264,   265,   268,   269,   273,   274,   275,   279,   280,   289,
+     289,   291,   291,   296,   300,   301,   305,   306,   314,   315,
+     319,   324,   325,   328,   328,   332,   332,   336,   337
 };
 #endif
 
@@ -996,7 +994,7 @@ do								\
     }								\
   else								\
     {								\
-      yyerror (YY_("syntax error: cannot back up")); \
+      yyerror (parseArg, YY_("syntax error: cannot back up")); \
       YYERROR;							\
     }								\
 while (YYID (0))
@@ -1053,7 +1051,7 @@ while (YYID (0))
 #ifdef YYLEX_PARAM
 # define YYLEX yylex (YYLEX_PARAM)
 #else
-# define YYLEX yylex ()
+# define YYLEX yylex (parseArg)
 #endif
 
 /* Enable debugging if requested.  */
@@ -1076,7 +1074,7 @@ do {									  \
     {									  \
       YYFPRINTF (stderr, "%s ", Title);					  \
       yy_symbol_print (stderr,						  \
-		  Type, Value); \
+		  Type, Value, parseArg); \
       YYFPRINTF (stderr, "\n");						  \
     }									  \
 } while (YYID (0))
@@ -1090,17 +1088,19 @@ do {									  \
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, SIN::ParseArguments & parseArg)
 #else
 static void
-yy_symbol_value_print (yyoutput, yytype, yyvaluep)
+yy_symbol_value_print (yyoutput, yytype, yyvaluep, parseArg)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
+    SIN::ParseArguments & parseArg;
 #endif
 {
   if (!yyvaluep)
     return;
+  YYUSE (parseArg);
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
     YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
@@ -1122,13 +1122,14 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, SIN::ParseArguments & parseArg)
 #else
 static void
-yy_symbol_print (yyoutput, yytype, yyvaluep)
+yy_symbol_print (yyoutput, yytype, yyvaluep, parseArg)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
+    SIN::ParseArguments & parseArg;
 #endif
 {
   if (yytype < YYNTOKENS)
@@ -1136,7 +1137,7 @@ yy_symbol_print (yyoutput, yytype, yyvaluep)
   else
     YYFPRINTF (yyoutput, "nterm %s (", yytname[yytype]);
 
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep);
+  yy_symbol_value_print (yyoutput, yytype, yyvaluep, parseArg);
   YYFPRINTF (yyoutput, ")");
 }
 
@@ -1179,12 +1180,13 @@ do {								\
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_reduce_print (YYSTYPE *yyvsp, int yyrule)
+yy_reduce_print (YYSTYPE *yyvsp, int yyrule, SIN::ParseArguments & parseArg)
 #else
 static void
-yy_reduce_print (yyvsp, yyrule)
+yy_reduce_print (yyvsp, yyrule, parseArg)
     YYSTYPE *yyvsp;
     int yyrule;
+    SIN::ParseArguments & parseArg;
 #endif
 {
   int yynrhs = yyr2[yyrule];
@@ -1198,7 +1200,7 @@ yy_reduce_print (yyvsp, yyrule)
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
 		       &(yyvsp[(yyi + 1) - (yynrhs)])
-		       		       );
+		       		       , parseArg);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -1206,7 +1208,7 @@ yy_reduce_print (yyvsp, yyrule)
 # define YY_REDUCE_PRINT(Rule)		\
 do {					\
   if (yydebug)				\
-    yy_reduce_print (yyvsp, Rule); \
+    yy_reduce_print (yyvsp, Rule, parseArg); \
 } while (YYID (0))
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1457,16 +1459,18 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, SIN::ParseArguments & parseArg)
 #else
 static void
-yydestruct (yymsg, yytype, yyvaluep)
+yydestruct (yymsg, yytype, yyvaluep, parseArg)
     const char *yymsg;
     int yytype;
     YYSTYPE *yyvaluep;
+    SIN::ParseArguments & parseArg;
 #endif
 {
   YYUSE (yyvaluep);
+  YYUSE (parseArg);
 
   if (!yymsg)
     yymsg = "Deleting";
@@ -1489,7 +1493,7 @@ int yyparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int yyparse (void);
+int yyparse (SIN::ParseArguments & parseArg);
 #else
 int yyparse ();
 #endif
@@ -1525,11 +1529,11 @@ yyparse (YYPARSE_PARAM)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 int
-yyparse (void)
+yyparse (SIN::ParseArguments & parseArg)
 #else
 int
-yyparse ()
-
+yyparse (parseArg)
+    SIN::ParseArguments & parseArg;
 #endif
 #endif
 {
@@ -2395,7 +2399,7 @@ yyerrlab:
     {
       ++yynerrs;
 #if ! YYERROR_VERBOSE
-      yyerror (YY_("syntax error"));
+      yyerror (parseArg, YY_("syntax error"));
 #else
       {
 	YYSIZE_T yysize = yysyntax_error (0, yystate, yychar);
@@ -2419,11 +2423,11 @@ yyerrlab:
 	if (0 < yysize && yysize <= yymsg_alloc)
 	  {
 	    (void) yysyntax_error (yymsg, yystate, yychar);
-	    yyerror (yymsg);
+	    yyerror (parseArg, yymsg);
 	  }
 	else
 	  {
-	    yyerror (YY_("syntax error"));
+	    yyerror (parseArg, YY_("syntax error"));
 	    if (yysize != 0)
 	      goto yyexhaustedlab;
 	  }
@@ -2447,7 +2451,7 @@ yyerrlab:
       else
 	{
 	  yydestruct ("Error: discarding",
-		      yytoken, &yylval);
+		      yytoken, &yylval, parseArg);
 	  yychar = YYEMPTY;
 	}
     }
@@ -2503,7 +2507,7 @@ yyerrlab1:
 
 
       yydestruct ("Error: popping",
-		  yystos[yystate], yyvsp);
+		  yystos[yystate], yyvsp, parseArg);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -2538,7 +2542,7 @@ yyabortlab:
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (YY_("memory exhausted"));
+  yyerror (parseArg, YY_("memory exhausted"));
   yyresult = 2;
   /* Fall through.  */
 #endif
@@ -2546,7 +2550,7 @@ yyexhaustedlab:
 yyreturn:
   if (yychar != YYEMPTY)
      yydestruct ("Cleanup: discarding lookahead",
-		 yytoken, &yylval);
+		 yytoken, &yylval, parseArg);
   /* Do not reclaim the symbols of the rule which action triggered
      this YYABORT or YYACCEPT.  */
   YYPOPSTACK (yylen);
@@ -2554,7 +2558,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-		  yystos[*yyssp], yyvsp);
+		  yystos[*yyssp], yyvsp, parseArg);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -2577,8 +2581,8 @@ int yyerror (char const* yaccProvidedMessage){
 	return 0;
 }
 
-/*
-int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMessage)
+
+int yyerror (SIN::ParseArguments & parseArg, char const* yaccProvidedMessage)
 {
 	SIN::String error = SIN::String() << yaccProvidedMessage;
 	
@@ -2586,10 +2590,10 @@ int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMes
 		error << " maybe missing ';'";
 	else
 		error << ", before token: " << yytext;
-	fabpa.SetError(std::make_pair(error, yylineno));
+	parseArg.SetError(std::make_pair(error, yylineno));
 	return 1;
 }
-*/
+
 
 
 int PrepareForFile(const char * filePath) {

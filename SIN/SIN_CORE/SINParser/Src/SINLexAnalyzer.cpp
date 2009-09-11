@@ -501,11 +501,11 @@ char *yytext;
 	#include "SINParser.h" /**/
 	#include "SINString.h"
 	#include "SINParserAPI.h"
-	#include "LexAndBisonParseArguments.h"
+	#include "ParseArguments.h"
 	
 	#define YY_NEVER_INTERACTIVE 1
 
-	#define YY_DECL int yylex(SIN::LexAndBisonParseArguments & fabpa)
+	#define YY_DECL int yylex(SIN::ParseArguments & fabpa)
 
 	static char InputWrapper (void);
 	static void UnputWrapper (char c);
@@ -1000,7 +1000,7 @@ YY_RULE_SETUP
 case 59:
 YY_RULE_SETUP
 {
-					yylval.stringV = SIN::LEX::LexUtility::SaveStr(yytext);
+					yylval.stringV = LEX::LexUtility::SaveStr(yytext);
 					return ID;
 				}
 	YY_BREAK

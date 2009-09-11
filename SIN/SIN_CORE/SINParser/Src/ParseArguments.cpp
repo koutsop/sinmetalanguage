@@ -1,18 +1,12 @@
-#include "LexAndBisonParseArguments.h"
+#include "ParseArguments.h"
 
 #include <algorithm>
 #include <functional>
+#include "SINAssert.h"
 
 
-#if 0
-#include "Common.h"
-#include "SINAlloc.h"
-#include "SINLogger.h"
-#include "SINConstants.h"
-#include "SINLoggerManager.h"
 
-
-#define SIN_BISON_PARSE_ARGUMENTS_LOGGER_NAME "SIN::LexAndBisonParseArguments"
+#define SIN_BISON_PARSE_ARGUMENTS_LOGGER_NAME "SIN::ParseArguments"
 
 
 namespace SIN {
@@ -23,7 +17,8 @@ namespace SIN {
 	struct CleanListFunctor : public std::unary_function<ASTNode *&, void> {
 		void operator() (ASTNode *& node) { 
 			if (node != static_cast<ASTNode *>(0)) {
-				SINDELETE(node); 
+				delete node;
+				//SINDELETE(node); 
 				node = static_cast<ASTNode *>(0);
 			}
 		}
@@ -45,75 +40,73 @@ namespace SIN {
 
 	//-----------------------------------------------------------------
 
-	LexAndBisonParseArguments::LexAndBisonParseArguments(const String & _fileName) : 
+	ParseArguments::ParseArguments(const String & _fileName) : 
 		hasError(false), 
 		root(static_cast<ASTNode *>(0)),
-		nodesList (SINEW(NodesList)),
+		nodesList (new NodesList),
+		//nodesList (SINEW(NodesList)),
 		fileName(_fileName)
 	{
-		Type<LoggerManager>::ref lm(*LoggerManager::SingletonGetInstance());
-		lm.GetDefaultLoggerFactory()->DestroyLogger(lm.MakeStdoutLogger(SIN_BISON_PARSE_ARGUMENTS_LOGGER_NAME));
-		logger_p = lm.GetLogger(SIN_BISON_PARSE_ARGUMENTS_LOGGER_NAME);
 	}
 	
 	
 	//-----------------------------------------------------------------
 
-	LexAndBisonParseArguments::~LexAndBisonParseArguments() 
+	ParseArguments::~ParseArguments() 
 		{ CleanErrors(); }
 
 	
 	//-----------------------------------------------------------------
 
-	bool LexAndBisonParseArguments::HasError() const 
+	bool ParseArguments::HasError() const 
 		{ return hasError; }
 
 
 	//-----------------------------------------------------------------
-	void LexAndBisonParseArguments::SetError (const ErrorInfo & ei) {
+	void ParseArguments::SetError (const ErrorInfo & ei) {
 		hasError = true;
 		errors.push_back(ei);
 	}
 
 	//-----------------------------------------------------------------
 	
-	void LexAndBisonParseArguments::WriteFine(const String & msg) 
-		{ logger_p->Fine(msg);	}
+	void ParseArguments::WriteFine(const String & msg) 
+		{ 	}
 
 	
 	//-----------------------------------------------------------------
 	
-	void LexAndBisonParseArguments::SetRoot(ASTNode * node) 
+	void ParseArguments::SetRoot(ASTNode * node) 
 		{ root = node; }
 
 
 	//-----------------------------------------------------------------
 	
-	ASTNode * LexAndBisonParseArguments::GetRoot() const 
+	ASTNode * ParseArguments::GetRoot() const 
 		{ return root; }
 
 
 	//-----------------------------------------------------------------
 
-	void LexAndBisonParseArguments::SetFileName(const String & _fileName)
+	void ParseArguments::SetFileName(const String & _fileName)
 		{ fileName = _fileName;	}
 
 
 	//-----------------------------------------------------------------
 	
-	const String LexAndBisonParseArguments::GetFileName(void) const
+	const String ParseArguments::GetFileName(void) const
 		{	return fileName;	}
 		
 
 	//-----------------------------------------------------------------
 	
-	const LexAndBisonParseArguments::Errors &	LexAndBisonParseArguments::GetErrors() const 
+	const ParseArguments::Errors &	ParseArguments::GetErrors() const 
 		{ return errors; }
 
 
 	//-----------------------------------------------------------------
 	
-	void LexAndBisonParseArguments::CleanNodes (void) { 
+	void ParseArguments::CleanNodes (void) { 
 		std::for_each(nodesList->begin(), nodesList->end(), CleanListFunctor()); 
 		nodesList->clear();
 	}
@@ -121,13 +114,13 @@ namespace SIN {
 	
 	//-----------------------------------------------------------------
 	
-	void LexAndBisonParseArguments::CleanErrors (void) 
+	void ParseArguments::CleanErrors (void) 
 		{ errors.clear(); }
 
 	
 	//-----------------------------------------------------------------
 	
-	void LexAndBisonParseArguments::CleanErrosAndNodes (void) {
+	void ParseArguments::CleanErrosAndNodes (void) {
 		CleanNodes();
 		CleanErrors();
 	}
@@ -135,13 +128,13 @@ namespace SIN {
 
 	//-----------------------------------------------------------------
 
-	void LexAndBisonParseArguments::AppendToNodeList (ASTNode * node) 
+	void ParseArguments::AppendToNodeList (ASTNode * node) 
 		{ nodesList->push_back(node); }
 	
 
 	//-----------------------------------------------------------------
 	
-	bool LexAndBisonParseArguments::RemoveNodeFromList(ASTNode * node) {
+	bool ParseArguments::RemoveNodeFromList(ASTNode * node) {
 		NodesList::iterator result = std::find_if(nodesList->begin(), nodesList->end(), FindFunctor(node));
 		
 		if (result != nodesList->end()) {
@@ -153,16 +146,16 @@ namespace SIN {
 
 	//-----------------------------------------------------------------
 
-	LexAndBisonParseArguments::NodesList * LexAndBisonParseArguments::TakeNodesList(void) 
+	ParseArguments::NodesList * ParseArguments::TakeNodesList(void) 
 		{	return nodesList;	}
 
 
-	void LexAndBisonParseArguments::DeleteNodesListAndNodes(void) {
+	void ParseArguments::DeleteNodesListAndNodes(void) {
 		SINASSERT(nodesList != 0x00);
 
 		CleanNodes();
-		SINDELETE(nodesList);
+		delete nodesList;
+		//SINDELETE(nodesList);
 		nodesList = 0x00;
 	}
 }	//namespace SIN
-#endif

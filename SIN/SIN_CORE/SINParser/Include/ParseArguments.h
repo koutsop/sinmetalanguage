@@ -1,26 +1,26 @@
-#ifndef __LEX_AND_BISON_PARSER_ARGUMENTS_H__
-#define __LEX_AND_BISON_PARSER_ARGUMENTS_H__
+#ifndef __SIN_PARSER_ARGUMENTS_H__
+#define __SIN_PARSER_ARGUMENTS_H__
 
-#if 0
+
 #include <list>
 
 #include <utility>
 #include "SINString.h"
-#include "SINLogger.h"
-#include "SINString.h"
-#include "SINASTNode.h"
+#include "SINASTNodes.h"
+
+
 
 namespace SIN {
 		
 		
-	class LexAndBisonParseArguments {
+	class ParseArguments {
 	public:
 		typedef std::list<ASTNode *>		NodesList;
 		typedef std::pair<String, unsigned>	ErrorInfo;
 		typedef std::list<ErrorInfo>		Errors;
 
-		LexAndBisonParseArguments(const String & _fileName = "");
-		~LexAndBisonParseArguments();
+		ParseArguments(const String & _fileName = "");
+		~ParseArguments();
 
 
 
@@ -65,7 +65,7 @@ namespace SIN {
 		
 		//------------->  WARNING	<----------------//
 		//YOU MUST TAKE THIS LIST AND DELETE ALL THE ELEMENTS AND AFTER THAT YOU MUST DELETE AND THE LIST.
-		//LexAndBisonParseArguments DOES NOT DO THIS AUTOMATCILALLY.
+		//ParseArguments DOES NOT DO THIS AUTOMATCILALLY.
 		//IF YOU DO NOT DO THAT, YOU ARE GOING TO HAVE MEMORY LEAKS
 		NodesList *		TakeNodesList(void);
 		
@@ -77,10 +77,9 @@ namespace SIN {
 		NodesList *	nodesList;
 		String		fileName;
 		
-		InstanceProxy<Logger> logger_p;
 
 	};
-}	//namespace SIN
-#endif
+}	//namespace BISON
 
-#endif //__LEX_AND_BISON_PARSER_ARGUMENTS_H__
+
+#endif //__SIN_PARSER_ARGUMENTS_H__

@@ -152,39 +152,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\Src\ASTVisitor.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Src\SINASTCloneVisitor.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Src\SINASTMITTreeVisualizerXMLProducerVisitor.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Src\SINASTNode.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\Src\SINASTNodes.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Src\SINASTTreeCtrlVisitor.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Src\SINASTTreeVisualisationVisitor.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Src\SINASTUnparseTreeVisitor.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Src\SINTreeNode.cpp"
 				>
 			</File>
 		</Filter>
@@ -194,47 +162,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\Include\SINASTCloneVisitor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINASTCommon.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINASTMITTreeVisualizerXMLProducerVisitor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINASTNode.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\Include\SINASTNodes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINASTTreeCtrlVisitor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINASTTreeVisualisationVisitor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINASTUnparseTreeVisitor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINASTVisitor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINStrictTreeNode.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\Include\SINTreeNode.h"
 				>
 			</File>
 		</Filter>

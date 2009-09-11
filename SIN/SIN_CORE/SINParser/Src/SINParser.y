@@ -15,10 +15,10 @@
 
 
 
-	//#include "SINString.h"
-	//#include "SINASTNode.h"
-	//#include "SINParserManage.h"
-	//#include "LexAndBisonParseArguments.h"
+	#include "SINString.h"
+	#include "SINASTNodes.h"
+	#include "SINParserManage.h"
+	#include "ParseArguments.h"
 	
 
 	////////////////////////////////////////////////////////////////////////
@@ -29,13 +29,12 @@
 	////////////////////////////////////////////////////////////////////////
 	// functions definitions
 	
-	int yyerror (char const* yaccProvidedMessage);
-	//int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMessage);
+	int yyerror (SIN::ParseArguments & parseArg, char const* yaccProvidedMessage);
 	int PrepareForFile(const char * filePath);
 	int PrepareForString(void);
 
 
-	int yylex(SIN::LexAndBisonParseArguments & fabpa);
+	int yylex(SIN::ParseArguments & parseArg);
 	//
 	extern int yylineno;
 	extern char* yytext;
@@ -43,18 +42,17 @@
 %}
 
 
-/*
-%parse-param {SIN::LexAndBisonParseArguments & fabpa}
-%lex-param   {SIN::LexAndBisonParseArguments & fabpa}
-*/
+
+%parse-param {SIN::ParseArguments & parseArg}
+%lex-param   {SIN::ParseArguments & parseArg}
+
 
 
 /*Token types*/
 %union {
-    char *	stringV;
+    char *			stringV;
     double			realV;
-    void *			AST;
-    //SIN::ASTNode *	AST;
+    SIN::ASTNode *	AST;
 };
 
 
@@ -345,8 +343,8 @@ int yyerror (char const* yaccProvidedMessage){
 	return 0;
 }
 
-/*
-int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMessage)
+
+int yyerror (SIN::ParseArguments & parseArg, char const* yaccProvidedMessage)
 {
 	SIN::String error = SIN::String() << yaccProvidedMessage;
 	
@@ -354,10 +352,10 @@ int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMes
 		error << " maybe missing ';'";
 	else
 		error << ", before token: " << yytext;
-	fabpa.SetError(std::make_pair(error, yylineno));
+	parseArg.SetError(std::make_pair(error, yylineno));
 	return 1;
 }
-*/
+
 
 
 int PrepareForFile(const char * filePath) {

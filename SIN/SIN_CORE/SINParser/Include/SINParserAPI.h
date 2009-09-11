@@ -1,13 +1,13 @@
 #ifndef __SIN_PARSER_API_H__
 #define __SIN_PARSER_API_H__
-#if 0
+
 #include <string>
 #include <stdio.h>
 #include <assert.h>
 #include <iostream>
 #include "SINString.h"
-#include "SINASTNode.h"
-#include "LexAndBisonParseArguments.h"
+#include "SINASTNodes.h"
+#include "ParseArguments.h"
 
 namespace SIN {
 
@@ -26,13 +26,13 @@ namespace SIN {
 		// If Parse* returned no error, this returns the produced AST
 		ASTNode *GetAST(void) const;
 
-		LexAndBisonParseArguments::NodesList *		TakeNodesList(void);
-		const LexAndBisonParseArguments::Errors &	GetErrors(void) const;
+		SIN::ParseArguments::NodesList *		TakeNodesList(void);
+		const SIN::ParseArguments::Errors &	GetErrors(void) const;
 		
 		
 
 	private:
-		LexAndBisonParseArguments labpa;
+		SIN::ParseArguments labpa;
 
 		int ParserString(char const *_input);
 
@@ -40,7 +40,7 @@ namespace SIN {
 	}; // class ParserAPI
 
 } // namespace SIN
-#endif //if 0
+
 
 #endif // __SIN_PARSER_API_H__
 

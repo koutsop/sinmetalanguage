@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SINCommon", "SINCommon\Proj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Common\Projects\VS\Common.vcproj", "{67ADD475-BC3E-4485-A405-872A093C62F3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SINAST", "SINAST\Projects\VS\SINAST.vcproj", "{E935FBB8-4670-4ED5-B84E-CE44E3F54B3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,10 @@ Global
 		{67ADD475-BC3E-4485-A405-872A093C62F3}.Debug|Win32.Build.0 = Debug|Win32
 		{67ADD475-BC3E-4485-A405-872A093C62F3}.Release|Win32.ActiveCfg = Release|Win32
 		{67ADD475-BC3E-4485-A405-872A093C62F3}.Release|Win32.Build.0 = Release|Win32
+		{E935FBB8-4670-4ED5-B84E-CE44E3F54B3E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E935FBB8-4670-4ED5-B84E-CE44E3F54B3E}.Debug|Win32.Build.0 = Debug|Win32
+		{E935FBB8-4670-4ED5-B84E-CE44E3F54B3E}.Release|Win32.ActiveCfg = Release|Win32
+		{E935FBB8-4670-4ED5-B84E-CE44E3F54B3E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

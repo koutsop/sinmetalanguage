@@ -1,8 +1,7 @@
 #ifndef __LEX_UTILITY_H__
 #define __LEX_UTILITY_H__
 
-/*
-#include "LexAndBisonParseArguments.h"
+#include "ParseArguments.h"
 
 namespace LEX {
 	class LexUtility {
@@ -11,14 +10,14 @@ namespace LEX {
 		
 		static char *	SaveQuotedString(char (*input)	(void),
 										 int *	line,
-										 SIN::LexAndBisonParseArguments &);
+										 SIN::ParseArguments &);
 		
 		static void		IgnoreCStyleComments( char (*input)	(void),
 											  void (*unput) (char),
 											  int *	line,
-											  SIN::LexAndBisonParseArguments &);
+											  SIN::ParseArguments &);
 	};
 }	//namespace LEX
 
-*/
+
 #endif

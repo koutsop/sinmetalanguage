@@ -1,12 +1,10 @@
 #include "LexUtility.h"
 
-#if 0
 #include <string>
 #include <utility>
 #include <stdio.h>
 #include <string.h>
 
-#include "SINAlloc.h"
 
 #define ERROR_(MSG, RETVAL)		labpa.SetError(std::make_pair(MSG, *line));	\
 								return RETVAL
@@ -23,9 +21,9 @@ namespace LEX {
 	
 	char * LexUtility::SaveStr(const char * yytext) {
 		const size_t yytext_len = strlen(yytext);
-		char* stringV			= SINEWARRAY(char, yytext_len + 1);
+		char* stringV			= new char [yytext_len + 1]; //SINEWARRAY(char, yytext_len + 1);
 		
-		SIN::Alloc::memcpy(stringV, yytext, sizeof(char)*(yytext_len + 1));
+		memcpy(stringV, yytext, sizeof(char)*(yytext_len + 1));
 		stringV[yytext_len] = '\0'; // be safe
 		
 		return stringV;
@@ -38,7 +36,7 @@ namespace LEX {
 		char (*input)	(void),
 		void (*unput)	(char),
 		int * line,
-		SIN::LexAndBisonParseArguments & labpa
+		SIN::ParseArguments & labpa
 	) {
 		char c				= '\0';
 		unsigned countSlash = 1;
@@ -78,7 +76,7 @@ namespace LEX {
 	char * LexUtility::SaveQuotedString(
 		char (*input) (void),
 		int * line,
-		SIN::LexAndBisonParseArguments & labpa
+		SIN::ParseArguments & labpa
 	){
 		char c = '\0';
 		std::string buffer;
@@ -114,4 +112,3 @@ namespace LEX {
 }	//namespace LEX
 
 
-#endif	//if 0
