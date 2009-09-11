@@ -184,7 +184,7 @@
 				Name="API"
 				>
 				<File
-					RelativePath="..\..\Src\LexAndBisonParseArguments.cpp"
+					RelativePath="..\..\Src\ParseArguments.cpp"
 					>
 				</File>
 				<File
@@ -206,7 +206,7 @@
 				Name="API"
 				>
 				<File
-					RelativePath="..\..\Include\LexAndBisonParseArguments.h"
+					RelativePath="..\..\Include\ParseArguments.h"
 					>
 				</File>
 				<File
