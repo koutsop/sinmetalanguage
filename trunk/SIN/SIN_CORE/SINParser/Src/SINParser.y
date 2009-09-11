@@ -15,10 +15,10 @@
 
 
 
-	#include "SINString.h"
-	#include "SINASTNode.h"
-	#include "SINParserManage.h"
-	#include "LexAndBisonParseArguments.h"
+	//#include "SINString.h"
+	//#include "SINASTNode.h"
+	//#include "SINParserManage.h"
+	//#include "LexAndBisonParseArguments.h"
 	
 
 	////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,8 @@
 	////////////////////////////////////////////////////////////////////////
 	// functions definitions
 	
-	int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMessage);
+	int yyerror (char const* yaccProvidedMessage);
+	//int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMessage);
 	int PrepareForFile(const char * filePath);
 	int PrepareForString(void);
 
@@ -42,17 +43,18 @@
 %}
 
 
-
+/*
 %parse-param {SIN::LexAndBisonParseArguments & fabpa}
 %lex-param   {SIN::LexAndBisonParseArguments & fabpa}
-
+*/
 
 
 /*Token types*/
 %union {
     char *	stringV;
     double			realV;
-    SIN::ASTNode *	AST;
+    void *			AST;
+    //SIN::ASTNode *	AST;
 };
 
 
@@ -60,12 +62,12 @@
 
 %type <AST>	SinCode stmts
 %type <AST> stmt ifstmt whilestmt forstmt returnstmt block
-%type <AST> expr assignexpr term metaexpr ternaryexpr 
+%type <AST> expr assignexpr term metaexpr metaparse metapreserve ternaryexpr 
 %type <AST> lvalue primary
-%type <AST> call objectdef funcdef fvaluedef methodsdef const
+%type <AST> call objectdef funcdef valuefuncdef methodef const
 %type <AST> member
-%type <AST> callsuffix elist
-%type <AST> normalcall methodcall
+%type <AST> elist
+%type <AST> normalcall
 %type <AST> elists
 %type <AST> objectlist objectlists
 %type <AST> stmtd
@@ -77,8 +79,8 @@
 ////////////////////////////////////////////////////////////////////////
 // Untyped tokens
 // 
-%token '[' ']' '{' '}' '(' ')' ';' ':' ',' '$', '?' DOT DOUBLEDOT
-%token IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE LOCAL GLOBAL TRUE_ FALSE_ NIL_
+%token '[' ']' '{' '}' '(' ')' ';' ':' ',' '$' '?' DOT DOUBLEDOT
+%token IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE LOCAL GLOBAL STATIC TRUE_ FALSE_ NIL_
 %token ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
 %token DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
 %token KEYS_MEMBER SIZE_MEMBER CONST METHOD SELF
@@ -139,31 +141,41 @@ expr:			assignexpr 									{}
 				|	expr	NOTEQ	expr					{}
 				|	expr	AND		expr					{}
 				|	expr	OR		expr					{}
-				|	objectexpr								{}
 				|	ternaryexpr								{}
 				|	metaexpr								{}
 				|	term									{}
 				;
-				
-objectexpr:		|	SELF									{}
-				|	expr									{}					
+	
+assignexpr:		lvalue ASSIGN expr							{}
 				;
-				
+
+								
 ternaryexpr:	'(' expr '?' expr ':' expr ')'				{}				
 				;
 				
 				
-				
-metaexpr:		DOT_LT	SinCode  GT_DOT						{}
-				|	DOT_LT	expr  GT_DOT					{}
-				|	DOT_TILDE lvalue						{}
-				|	DOT_TILDE call							{}
+/**************************	 Meta expressions  **************************/
+
+metaexpr:		metaparse									{}
+				|	metapreserve							{}
 				|	DOT_EXCl_MARK	metaexpr				{}
-				|	DOT_AT	lvalue							{}
-				|	DOT_HASH	metaexpr					{}
+				|	DOT_AT			lvalue					{}
+				|	DOT_HASH		metaexpr				{}
+				;
+
+				
+metaparse:		DOT_LT	SinCode  GT_DOT						{}
+				|	DOT_LT	expr  GT_DOT					{}
+				;
+
+
+metapreserve:	DOT_TILDE		lvalue						{}
+				|	DOT_TILDE		call					{}
 				;
 				
 				
+/**************************	 Term  **************************/
+
 
 term:			'(' expr ')'								{}
 				|	'$' stmt '$'							{}
@@ -178,26 +190,30 @@ term:			'(' expr ')'								{}
 				
 
 
-assignexpr:		lvalue ASSIGN expr							{}
-				;
-
-
-
 primary:		lvalue										{}
 				|	call									{}
 				|	objectdef								{}
-				|	'(' fvaluedef ')'						{}
+				|	valuefuncdef							{}
 				|	const									{}
 				;
 
 
-
-lvalue:			ID 											{}
-				|	LOCAL ID								{}
-				|	GLOBAL ID								{}
-				|	member									{}
+const:			NUMBER 										{}
+				|	STRING 									{}
+				|	NIL_ 									{}
+				|	TRUE_ 									{}
+				|	FALSE_									{}
 				;
 
+
+lvalue:			ID 											{}
+				|	CONST	ID								{}
+				|	LOCAL	ID								{}
+				|	GLOBAL	ID								{}
+				|	STATIC	ID								{}
+				|	SELF									{}
+				|	member									{}
+				;
 
     
 member:			lvalue DOT ID								{}
@@ -210,18 +226,13 @@ member:			lvalue DOT ID								{}
 
 
 
+/********************* functions and method call ********************/
 	
-call:			call callsuffix								{}
-				|	lvalue callsuffix						{}
-				|	'(' expr ')'	'(' elist ')'			{}
-				|	'(' fvaluedef ')' '(' elist ')'			{}
+call:			call normalcall								{}
+				|	lvalue normalcall						{}
+				|	'(' expr ')'	normalcall				{}
+				|	valuefuncdef	normalcall				{}
 				; 
-
-
-callsuffix:		normalcall									{}
-				|	methodcall								{}
-				;
-
 
 
 normalcall:		'(' elist ')'								{}
@@ -229,61 +240,52 @@ normalcall:		'(' elist ')'								{}
 				
 				
 				
-methodcall:		DOUBLEDOT ID '(' elist ')'					{}	/*equivalent to lvalue.id(lvalue, elist)*/
-				;
-
-
-
 elist:			expr elists									{}
 				| 											{}
 				;
 
 
-
 elists:			',' expr elists								{}
 				|											{}
 				;
-
-block:			'{' {} stmtd '}'							{}
-				;
-
-
-
-stmtd:			stmt stmtd									{}
-				|											{}
-				;
-
-
+		
+		
+				
+/*********************  OBJECTS  *********************/
 
 objectdef:		'[' ']'										{}
 				|	'[' objectlist ']'						{}
 				;
 			
-			
-			
-objectlist:	 	objectexpr objectlists						{}
-				|	objectexpr ':' objectexpr objectlists	{}
-				|	methodsdef objectlists					{}
+objectlist:	 	unindexed									{}
+				|	indexed									{}
+				;
+
+indexed:		expr		':' expr objectlists			{}
+				|	expr	':' methodef					{}
+				|	DOT ID	':' expr objectlists			{}
+				|	DOT ID	':'	methodef					{} 
+				;
+				
+unindexed:		expr objectlists							{}
+				|	methodef objectlists					{}
 				;
 
 
-
-objectlists:	',' expr objectlists						{}
-				|	',' expr ':' expr objectlists			{}
-				|	',' methodsdef objectlists				{}
+objectlists:	',' indexed									{}
+				|	',' unindexed							{}
 				|											{}
 				;
 
-methodsdef		:	METHOD ID	'(' idlist ')' block		{}
+
+methodef:		METHOD ID	'(' idlist ')' block			{}
 				|	METHOD		'(' idlist ')' block		{}
 				;
 
 
-fvaluedef:		FUNCTION									{}
-				ID	'(' idlist ')' block					{}
-				|	FUNCTION								{}
-					'(' idlist ')' block					{}
-				;
+
+
+/**********************************************************************/
 
 				
 funcdef:		FUNCTION									{}
@@ -293,11 +295,7 @@ funcdef:		FUNCTION									{}
 				;
 
 
-const:			NUMBER 										{}
-				|	STRING 									{}
-				|	NIL_ 									{}
-				|	TRUE_ 									{}
-				|	FALSE_									{}
+valuefuncdef:	'(' funcdef ')'								{}
 				;
 
 
@@ -306,12 +304,24 @@ idlist:			ID idlists									{}
 				;
 
 
-
 idlists:		',' ID idlists	    						{}
 				|				    						{}
 				;
 
 
+
+/****************************  Stmts  ****************************/
+
+
+stmtd:			stmt stmtd									{}
+				|											{}
+				;
+
+
+block:			'{' stmtd '}'								{}
+				;
+				
+				
 
 ifstmt:			IF '(' expr	')' stmt						{}
 				|	IF '(' expr ')' stmt ELSE stmt			{}

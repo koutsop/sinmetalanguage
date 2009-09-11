@@ -54,35 +54,39 @@
      CONTINUE = 270,
      LOCAL = 271,
      GLOBAL = 272,
-     TRUE = 273,
-     FALSE = 274,
-     NIL = 275,
-     ASSIGN = 276,
-     ADD = 277,
-     MIN = 278,
-     MUL = 279,
-     DIV = 280,
-     MOD = 281,
-     EQ = 282,
-     NOTEQ = 283,
-     INCR = 284,
-     DECR = 285,
-     GT = 286,
-     LT = 287,
-     GE = 288,
-     LE = 289,
-     AND = 290,
-     OR = 291,
-     NOT = 292,
-     DOT_LT = 293,
-     GT_DOT = 294,
-     DOT_TILDE = 295,
-     DOT_EXCl_MARK = 296,
-     DOT_AT = 297,
-     DOT_HASH = 298,
-     KEYS_MEMBER = 299,
-     SIZE_MEMBER = 300,
-     UMINUS = 301
+     STATIC = 273,
+     TRUE_ = 274,
+     FALSE_ = 275,
+     NIL_ = 276,
+     ASSIGN = 277,
+     ADD = 278,
+     MIN = 279,
+     MUL = 280,
+     DIV = 281,
+     MOD = 282,
+     EQ = 283,
+     NOTEQ = 284,
+     INCR = 285,
+     DECR = 286,
+     GT = 287,
+     LT = 288,
+     GE = 289,
+     LE = 290,
+     AND = 291,
+     OR = 292,
+     NOT = 293,
+     DOT_LT = 294,
+     GT_DOT = 295,
+     DOT_TILDE = 296,
+     DOT_EXCl_MARK = 297,
+     DOT_AT = 298,
+     DOT_HASH = 299,
+     KEYS_MEMBER = 300,
+     SIZE_MEMBER = 301,
+     CONST = 302,
+     METHOD = 303,
+     SELF = 304,
+     UMINUS = 305
    };
 #endif
 /* Tokens.  */
@@ -101,35 +105,39 @@
 #define CONTINUE 270
 #define LOCAL 271
 #define GLOBAL 272
-#define TRUE 273
-#define FALSE 274
-#define NIL 275
-#define ASSIGN 276
-#define ADD 277
-#define MIN 278
-#define MUL 279
-#define DIV 280
-#define MOD 281
-#define EQ 282
-#define NOTEQ 283
-#define INCR 284
-#define DECR 285
-#define GT 286
-#define LT 287
-#define GE 288
-#define LE 289
-#define AND 290
-#define OR 291
-#define NOT 292
-#define DOT_LT 293
-#define GT_DOT 294
-#define DOT_TILDE 295
-#define DOT_EXCl_MARK 296
-#define DOT_AT 297
-#define DOT_HASH 298
-#define KEYS_MEMBER 299
-#define SIZE_MEMBER 300
-#define UMINUS 301
+#define STATIC 273
+#define TRUE_ 274
+#define FALSE_ 275
+#define NIL_ 276
+#define ASSIGN 277
+#define ADD 278
+#define MIN 279
+#define MUL 280
+#define DIV 281
+#define MOD 282
+#define EQ 283
+#define NOTEQ 284
+#define INCR 285
+#define DECR 286
+#define GT 287
+#define LT 288
+#define GE 289
+#define LE 290
+#define AND 291
+#define OR 292
+#define NOT 293
+#define DOT_LT 294
+#define GT_DOT 295
+#define DOT_TILDE 296
+#define DOT_EXCl_MARK 297
+#define DOT_AT 298
+#define DOT_HASH 299
+#define KEYS_MEMBER 300
+#define SIZE_MEMBER 301
+#define CONST 302
+#define METHOD 303
+#define SELF 304
+#define UMINUS 305
 
 
 
@@ -141,7 +149,8 @@ typedef union YYSTYPE
 
     char *	stringV;
     double			realV;
-    SIN::ASTNode *	AST;
+    void *			AST;
+    //SIN::ASTNode *	AST;
 
 
 
