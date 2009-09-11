@@ -60,9 +60,9 @@
 
 %type <AST>	SinCode stmts
 %type <AST> stmt ifstmt whilestmt forstmt returnstmt block
-%type <AST> expr assignexpr term metaexpr
+%type <AST> expr assignexpr term metaexpr ternaryexpr 
 %type <AST> lvalue primary
-%type <AST> call objectdef funcdef fvaluedef objectfuncdef const
+%type <AST> call objectdef funcdef fvaluedef methodsdef const
 %type <AST> member
 %type <AST> callsuffix elist
 %type <AST> normalcall methodcall
@@ -77,11 +77,11 @@
 ////////////////////////////////////////////////////////////////////////
 // Untyped tokens
 // 
-%token '[' ']' '{' '}' '(' ')' ';' ':' ',' '$' DOT DOUBLEDOT
-%token IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE LOCAL GLOBAL TRUE FALSE NIL
+%token '[' ']' '{' '}' '(' ')' ';' ':' ',' '$', '?' DOT DOUBLEDOT
+%token IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE LOCAL GLOBAL TRUE_ FALSE_ NIL_
 %token ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
 %token DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
-%token KEYS_MEMBER SIZE_MEMBER
+%token KEYS_MEMBER SIZE_MEMBER CONST METHOD SELF
 
 
 %left		ASSIGN
@@ -139,11 +139,17 @@ expr:			assignexpr 									{}
 				|	expr	NOTEQ	expr					{}
 				|	expr	AND		expr					{}
 				|	expr	OR		expr					{}
+				|	objectexpr								{}
+				|	ternaryexpr								{}
 				|	metaexpr								{}
-				|	DOT_HASH	metaexpr					{}
-				|	"[[" stmt "]]"							{}
 				|	term									{}
-
+				;
+				
+objectexpr:		|	SELF									{}
+				|	expr									{}					
+				;
+				
+ternaryexpr:	'(' expr '?' expr ':' expr ')'				{}				
 				;
 				
 				
@@ -154,11 +160,13 @@ metaexpr:		DOT_LT	SinCode  GT_DOT						{}
 				|	DOT_TILDE call							{}
 				|	DOT_EXCl_MARK	metaexpr				{}
 				|	DOT_AT	lvalue							{}
+				|	DOT_HASH	metaexpr					{}
 				;
 				
 				
 
 term:			'(' expr ')'								{}
+				|	'$' stmt '$'							{}
 				|	MIN		expr %prec UMINUS				{}	
 				|	NOT		expr							{}
 				|	INCR	lvalue							{}
@@ -236,29 +244,6 @@ elists:			',' expr elists								{}
 				|											{}
 				;
 
-
-
-objectdef:		'[' ']'										{}
-				|	'[' objectlist ']'						{}
-				;
-			
-			
-			
-objectlist:	 	expr objectlists							{}
-				|	expr ':' expr objectlists				{}
-				|	objectfuncdef objectlists				{}
-				;
-
-
-
-objectlists:	',' expr objectlists						{}
-				|	',' expr ':' expr objectlists			{}
-				|	',' objectfuncdef objectlists			{}
-				|											{}
-				;
-
-
-
 block:			'{' {} stmtd '}'							{}
 				;
 
@@ -267,12 +252,32 @@ block:			'{' {} stmtd '}'							{}
 stmtd:			stmt stmtd									{}
 				|											{}
 				;
-				
-objectfuncdef:	FUNCTION									{}
-				ID	'(' idlist ')' block					{}
-				|	FUNCTION								{}
-					'(' idlist ')' block					{}
+
+
+
+objectdef:		'[' ']'										{}
+				|	'[' objectlist ']'						{}
 				;
+			
+			
+			
+objectlist:	 	objectexpr objectlists						{}
+				|	objectexpr ':' objectexpr objectlists	{}
+				|	methodsdef objectlists					{}
+				;
+
+
+
+objectlists:	',' expr objectlists						{}
+				|	',' expr ':' expr objectlists			{}
+				|	',' methodsdef objectlists				{}
+				|											{}
+				;
+
+methodsdef		:	METHOD ID	'(' idlist ')' block		{}
+				|	METHOD		'(' idlist ')' block		{}
+				;
+
 
 fvaluedef:		FUNCTION									{}
 				ID	'(' idlist ')' block					{}
@@ -290,9 +295,9 @@ funcdef:		FUNCTION									{}
 
 const:			NUMBER 										{}
 				|	STRING 									{}
-				|	NIL 									{}
-				|	TRUE 									{}
-				|	FALSE									{}
+				|	NIL_ 									{}
+				|	TRUE_ 									{}
+				|	FALSE_									{}
 				;
 
 
@@ -326,6 +331,11 @@ returnstmt:		RETURN ';'									{}
 
 %%
 
+int yyerror (char const* yaccProvidedMessage){
+	return 0;
+}
+
+/*
 int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMessage)
 {
 	SIN::String error = SIN::String() << yaccProvidedMessage;
@@ -337,6 +347,7 @@ int yyerror (SIN::LexAndBisonParseArguments & fabpa, char const* yaccProvidedMes
 	fabpa.SetError(std::make_pair(error, yylineno));
 	return 1;
 }
+*/
 
 
 int PrepareForFile(const char * filePath) {
