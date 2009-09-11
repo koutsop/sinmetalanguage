@@ -106,7 +106,8 @@ number			{digit}+(\.{digit}+)?
 "and"			{ return AND;		}
 "or"			{ return OR;		}
 
-"self"			{ SELF;				}
+"static"		{ return STATIC;	}
+"self"			{ return SELF;		}
 "const"			{ return CONST;		}
 "method"		{ return METHOD;	}
 
