@@ -59,7 +59,9 @@ number			{digit}+(\.{digit}+)?
 ")"				{ return ')';			}
 ";"				{ return ';';			}
 ":"				{ return ':';			}
-","				{ return ',';			}	
+","				{ return ',';			}
+"$"				{ return '$';			}
+"?"				{ return '?';			}	
 ".<"			{ return DOT_LT;		}
 ">."			{ return GT_DOT;		}
 ".~"			{ return DOT_TILDE;		}
@@ -97,19 +99,23 @@ number			{digit}+(\.{digit}+)?
 "return"		{ return RETURN;	}
 "local"			{ return LOCAL;		}
 "global"		{ return GLOBAL;	}
-"true"			{ return TRUE;		}
-"false"			{ return FALSE;		}
-"nil"			{ return NIL;		}
+"true"			{ return TRUE_;		}
+"false"			{ return FALSE_;	}
+"nil"			{ return NIL_;		}
 "not"			{ return NOT;		}
 "and"			{ return AND;		}
 "or"			{ return OR;		}
+
+"self"			{ SELF;				}
+"const"			{ return CONST;		}
+"method"		{ return METHOD;	}
 
 
 "$keys"			{ return KEYS_MEMBER;	}
 "$size"			{ return SIZE_MEMBER;	}
 
 
-{ccomments}		{	SIN::LEX::LexUtility::IgnoreCStyleComments(InputWrapper, UnputWrapper, &yylineno, fabpa); }
+{ccomments}		{	LEX::LexUtility::IgnoreCStyleComments(InputWrapper, UnputWrapper, &yylineno, fabpa); }
 
 {lineComm}		{}
 
@@ -126,7 +132,7 @@ number			{digit}+(\.{digit}+)?
 				}
 				
 {string}		{ 
-					yylval.stringV = SIN::LEX::LexUtility::SaveQuotedString(InputWrapper, &yylineno, fabpa);
+					yylval.stringV = LEX::LexUtility::SaveQuotedString(InputWrapper, &yylineno, fabpa);
 					return STRING;	
 				}
 
