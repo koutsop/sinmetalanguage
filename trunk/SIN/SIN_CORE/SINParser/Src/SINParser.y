@@ -23,6 +23,8 @@
 
 	////////////////////////////////////////////////////////////////////////
 	// defines
+	#define CREATE_NODE(NODE, NAME, RULE)	RULE = new NODE##ASTnode(NAME, parseArg.GetFileName, yylineno);	\
+											parseArg.AppendToNodeList(RULE)
 	
 
 
@@ -70,6 +72,11 @@
 %type <AST> objectlist objectlists
 %type <AST> stmtd
 %type <AST> idlist idlists
+%type <AST> IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE
+%type <AST> ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
+%type <AST> DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
+%type <AST> LOCAL GLOBAL STATIC TRUE_ FALSE_ NIL_
+%type <AST> KEYS_MEMBER SIZE_MEMBER CONST METHOD SELF
 %token <realV>   NUMBER
 %token <stringV> ID STRING
 
@@ -77,11 +84,7 @@
 ////////////////////////////////////////////////////////////////////////
 // Untyped tokens
 // 
-%token '[' ']' '{' '}' '(' ')' ';' ':' ',' '$' '?' DOT DOUBLEDOT
-%token IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE LOCAL GLOBAL STATIC TRUE_ FALSE_ NIL_
-%token ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
-%token DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
-%token KEYS_MEMBER SIZE_MEMBER CONST METHOD SELF
+%token '[' ']' '{' '}' '(' ')' ';' ':' ',' '$' '?' DOT
 
 
 %left		ASSIGN
@@ -168,7 +171,7 @@ metaparse:		DOT_LT	SinCode  GT_DOT						{}
 
 
 metapreserve:	DOT_TILDE		lvalue						{}
-				|	DOT_TILDE		call					{}
+				|	DOT_TILDE	call						{}
 				;
 				
 				
@@ -276,8 +279,10 @@ objectlists:	',' indexed									{}
 				;
 
 
-methodef:		METHOD ID	'(' idlist ')' block			{}
-				|	METHOD		'(' idlist ')' block		{}
+methodef:		METHOD										{ CREATE_NODE(Method, "Method", $1); }
+				ID	'(' idlist ')' block					{}
+				|	METHOD									{ CREATE_NODE(LamdaMethod, "LamdaMethod", $1);}
+					'(' idlist ')' block					{}
 				;
 
 
@@ -285,15 +290,15 @@ methodef:		METHOD ID	'(' idlist ')' block			{}
 
 /**********************************************************************/
 
-				
-funcdef:		FUNCTION									{}
-				ID	'(' idlist ')' block					{}
-				|	FUNCTION								{}
-					'(' idlist ')' block					{}
-				;
-
 
 valuefuncdef:	'(' funcdef ')'								{}
+				;
+				
+
+funcdef:		FUNCTION									{ CREATE_NODE(Function, "function", $1); }
+				ID	'(' idlist ')' block					{}
+				|	FUNCTION								{ CREATE_NODE(LamdaFunction, "LamdaFunction", $1);}
+					'(' idlist ')' block					{}
 				;
 
 
@@ -321,20 +326,31 @@ block:			'{' stmtd '}'								{}
 				
 				
 
-ifstmt:			IF '(' expr	')' stmt						{}
-				|	IF '(' expr ')' stmt ELSE stmt			{}
+ifstmt:			IF 
+				'(' expr									{ CREATE_NODE(If, "if", $1); }
+				')' stmt									{}
+				|	IF										{ CREATE_NODE(IfElse, "ifelse", $1);}
+					'(' expr								{}
+					')' stmt								{}
+					ELSE stmt								{}
 				;
 
-whilestmt:		WHILE										{}
-				'(' expr ')' stmt							{}
+whilestmt:		WHILE										{ CREATE_NODE(While, "for", $1);					}
+				'(' expr									{ CREATE_NODE(WhileCodition, "WhileCodition", $3);	}
+				')' stmt									{}
 				;
 
-forstmt:		FOR											{}
-				'(' elist ';' expr ';' elist ')' stmt		{}
+forstmt:		FOR											{ CREATE_NODE(For, "for", $1);						}
+				'(' elist									{ CREATE_NODE(ForInitList, "ForInitList", $3);		}
+				';' expr									{ CREATE_NODE(ForCodition, "ForCodition", $5);		}
+				';' elist									{ CREATE_NODE(ForRepeatList, "ForRepeatList", $7);	}
+				')' stmt									{}
 				;
 
-returnstmt:		RETURN ';'									{}
-				|	RETURN expr ';' 						{}
+returnstmt:		RETURN										{ CREATE_NODE(ReturnEmpty, "Return", $1);}
+				';'											{ }
+				|	RETURN									{ CREATE_NODE(ReturnExpr, "ReturnExpr", $1); }
+					expr ';' 								{ }
 				;
 
 %%

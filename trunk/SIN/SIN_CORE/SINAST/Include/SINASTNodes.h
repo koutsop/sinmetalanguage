@@ -39,52 +39,87 @@ namespace SIN{
 		virtual NAME##ASTNode *Clone(void) const;		\
     }
 
-	SINASTNODE_NODE_DECL(SinCode		);
-	SINASTNODE_NODE_DECL(Block			);
-	SINASTNODE_NODE_DECL(Assign			);
-	SINASTNODE_NODE_DECL(NormalCall		);
-	SINASTNODE_NODE_DECL(MethodCall		);
-	SINASTNODE_NODE_DECL(FuncdefCall	);
-	SINASTNODE_NODE_DECL(ExpressionCall	);
-	SINASTNODE_NODE_DECL(ActualArguments);
-	SINASTNODE_NODE_DECL(ExpressionList	);
-	SINASTNODE_NODE_DECL(Function		);
-	SINASTNODE_NODE_DECL(LamdaFunction	);
-	SINASTNODE_NODE_DECL(FormalArguments);
-	SINASTNODE_NODE_DECL(ID				);
-	SINASTNODE_NODE_DECL(LocalID		);
-	SINASTNODE_NODE_DECL(GlobalID		);
-	SINASTNODE_NODE_DECL(If				);
-	SINASTNODE_NODE_DECL(IfElse			);
-	SINASTNODE_NODE_DECL(For			);
-	SINASTNODE_NODE_DECL(ForPreamble	);
-	SINASTNODE_NODE_DECL(ForAddendum	);
-	SINASTNODE_NODE_DECL(While			);
-	SINASTNODE_NODE_DECL(PreIncr		);
-	SINASTNODE_NODE_DECL(PostIncr		);
-	SINASTNODE_NODE_DECL(PreDecr		);
-	SINASTNODE_NODE_DECL(PostDecr		);
-	SINASTNODE_NODE_DECL(UnaryNot		);
-	SINASTNODE_NODE_DECL(UnaryMin		);
-	SINASTNODE_NODE_DECL(Continue		);
-	SINASTNODE_NODE_DECL(Break			);
-	SINASTNODE_NODE_DECL(Object			);
-	SINASTNODE_NODE_DECL(EmptyObject	);
-	SINASTNODE_NODE_DECL(UnindexedMember);
-	SINASTNODE_NODE_DECL(IndexedMember	);
-	SINASTNODE_NODE_DECL(ObjectMember	);
-	SINASTNODE_NODE_DECL(ObjectIndex	);
-	SINASTNODE_NODE_DECL(CallMember		);
-	SINASTNODE_NODE_DECL(CallIndex		);
-	SINASTNODE_NODE_DECL(ObjectKeys		);
-	SINASTNODE_NODE_DECL(ObjectSize		);
-	SINASTNODE_NODE_DECL(Return			);
-	SINASTNODE_NODE_DECL(Semicolon		);
-	SINASTNODE_NODE_DECL(MetaParse		);
-	SINASTNODE_NODE_DECL(MetaPreserve	);
-	SINASTNODE_NODE_DECL(MetaEvaluate	);
-	SINASTNODE_NODE_DECL(MetaUnparse	);
-	SINASTNODE_NODE_DECL(MetaParseString);
+	SINASTNODE_NODE_DECL(SinCode			);
+	SINASTNODE_NODE_DECL(Block				);
+	SINASTNODE_NODE_DECL(Assign				);
+	SINASTNODE_NODE_DECL(NormalCall			);
+	SINASTNODE_NODE_DECL(MethodCall			);
+	SINASTNODE_NODE_DECL(FuncdefCall		);
+	SINASTNODE_NODE_DECL(ExpressionCall		);
+	SINASTNODE_NODE_DECL(ActualArguments	);
+	SINASTNODE_NODE_DECL(ExpressionList		);
+	
+	SINASTNODE_NODE_DECL(Function			);
+	SINASTNODE_NODE_DECL(LamdaFunction		);
+	
+	SINASTNODE_NODE_DECL(Method				);	///
+	SINASTNODE_NODE_DECL(LamdaMethod		);	///
+
+
+
+
+	SINASTNODE_NODE_DECL(Ternary			);	///
+	SINASTNODE_NODE_DECL(TernaryCondition	);	///
+	SINASTNODE_NODE_DECL(TernarySelection1	);	///
+	SINASTNODE_NODE_DECL(TernarySelection2	);	///
+	ternaryexpr
+
+
+	SINASTNODE_NODE_DECL(FormalArguments	);
+
+	SINASTNODE_NODE_DECL(ParenthesisExpr	);
+	SINASTNODE_NODE_DECL(StatementExpr		);
+	SINASTNODE_NODE_DECL(StatementsExpr		);
+	
+	SINASTNODE_NODE_DECL(ID					);
+	SINASTNODE_NODE_DECL(LocalID			);
+	SINASTNODE_NODE_DECL(GlobalID			);
+	SINASTNODE_NODE_DECL(If					);
+	SINASTNODE_NODE_DECL(IfElse				);
+	
+//////////////////////////////////////////////	
+	SINASTNODE_NODE_DECL(For				);
+	SINASTNODE_NODE_DECL(ForInitList		);	///
+	SINASTNODE_NODE_DECL(ForCodition		);	///
+	SINASTNODE_NODE_DECL(ForRepeatList		);	///
+//////////////////////////////////////////////
+
+
+	
+	SINASTNODE_NODE_DECL(While				);
+	SINASTNODE_NODE_DECL(WhileCodition		);	///
+
+	SINASTNODE_NODE_DECL(PreIncr			);
+	SINASTNODE_NODE_DECL(PostIncr			);
+	SINASTNODE_NODE_DECL(PreDecr			);
+	SINASTNODE_NODE_DECL(PostDecr			);
+	SINASTNODE_NODE_DECL(UnaryNot			);
+	SINASTNODE_NODE_DECL(UnaryMin			);
+	SINASTNODE_NODE_DECL(Continue			);
+	SINASTNODE_NODE_DECL(Break				);
+	SINASTNODE_NODE_DECL(Object				);
+	SINASTNODE_NODE_DECL(EmptyObject		);
+	SINASTNODE_NODE_DECL(UnindexedMember	);
+	SINASTNODE_NODE_DECL(IndexedMember		);
+	SINASTNODE_NODE_DECL(ObjectMember		);
+	SINASTNODE_NODE_DECL(ObjectIndex		);
+	SINASTNODE_NODE_DECL(CallMember			);
+	SINASTNODE_NODE_DECL(CallIndex			);
+	SINASTNODE_NODE_DECL(ObjectKeys			);
+	SINASTNODE_NODE_DECL(ObjectSize			);
+	
+
+	SINASTNODE_NODE_DECL(ReturnExpr			);	///
+	SINASTNODE_NODE_DECL(ReturnEmpty		);	///
+	
+
+
+	SINASTNODE_NODE_DECL(Semicolon			);
+	SINASTNODE_NODE_DECL(MetaParse			);
+	SINASTNODE_NODE_DECL(MetaPreserve		);
+	SINASTNODE_NODE_DECL(MetaEvaluate		);
+	SINASTNODE_NODE_DECL(MetaUnparse		);
+	SINASTNODE_NODE_DECL(MetaParseString	);
 
 
 	// Constants, Operators, Terminals
