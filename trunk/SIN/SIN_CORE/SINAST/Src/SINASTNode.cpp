@@ -1,4 +1,4 @@
-#include "SINASTNodes.h"
+#include "SINASTNode.h"
 
 #include <list>
 #include "SINAssert.h"
@@ -162,7 +162,7 @@ namespace SIN{
 	//---------------------------------------------------
 	// instance factory methods
 	String const ASTNodeFactory::iNextName(void) 
-		{	return "";	}
+		{	return namer++;	}
 
 
 	//---------------------------------------------------

@@ -16,7 +16,7 @@
 
 
 	#include "SINString.h"
-	#include "SINASTNodes.h"
+	#include "SINASTNode.h"
 	#include "SINParserManage.h"
 	#include "ParseArguments.h"
 	

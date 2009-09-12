@@ -1,7 +1,8 @@
-#ifndef __SIN_AST_NODES_H__
-#define __SIN_AST_NODES_H__
+#ifndef __SIN_AST_NODE_H__
+#define __SIN_AST_NODE_H__
 
 #include "SINString.h"
+#include "SINNamer.h"
 
 namespace SIN {
 
@@ -50,7 +51,7 @@ namespace SIN {
 	///***************	ASTNodeFactory	***************
 	
 	class ASTNodeFactory {
-		String namer;
+		Namer namer;
 		ASTNode::ID_t next_id;
 
 		ASTNodeFactory(void);
@@ -79,4 +80,4 @@ namespace SIN {
 
 
 
-#endif	//__SIN_AST_NODES_H__
+#endif	//__SIN_AST_NODE_H__

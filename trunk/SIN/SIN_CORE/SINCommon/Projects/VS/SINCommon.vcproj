@@ -160,6 +160,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Src\SINNamer.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Src\SINOutputStream.cpp"
 				>
 			</File>
@@ -187,6 +191,10 @@
 			</File>
 			<File
 				RelativePath="..\..\Include\SINInputStream.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Include\SINNamer.h"
 				>
 			</File>
 			<File

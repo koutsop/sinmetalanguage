@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <iostream>
 #include "SINString.h"
-#include "SINASTNodes.h"
+#include "SINASTNode.h"
 #include "ParseArguments.h"
 
 namespace SIN {
