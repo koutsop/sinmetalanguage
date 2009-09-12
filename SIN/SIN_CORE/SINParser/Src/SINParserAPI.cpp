@@ -3,7 +3,7 @@
 
 #include "SINParser.h"
 #include "SINAssert.h"
-#include "SINASTNodes.h"
+#include "SINASTNode.h"
 
 
 
