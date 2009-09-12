@@ -221,16 +221,20 @@
 					RelativePath="..\..\Include\SINParserManage.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\Include\unistd.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Scanner"
 				>
 				<File
 					RelativePath="..\..\Include\LexUtility.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Parser"
+				>
+				<File
+					RelativePath="..\..\Include\unistd.h"
 					>
 				</File>
 			</Filter>
