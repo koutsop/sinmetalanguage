@@ -60,25 +60,25 @@
 
 %start SinCode
 
-%type <AST>	SinCode stmts
-%type <AST> stmt ifstmt loopstmt whilestmt forstmt foreach returnstmt block
-%type <AST> expr assignexpr term metaexpr metaparse metapreserve ternaryexpr 
-%type <AST> lvalue primary
-%type <AST> call objectdef funcdef valuefuncdef methodef const
-%type <AST> member
-%type <AST> elist
-%type <AST> normalcall
-%type <AST> elists
-%type <AST> objectlist objectlists
-%type <AST> stmtd
-%type <AST> idlist idlists
-%type <AST> IF ELSE WHILE FOR DO IN FOREACH FUNCTION RETURN BREAK CONTINUE
-%type <AST> ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
-%type <AST> DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
-%type <AST> LOCAL GLOBAL STATIC TRUE_ FALSE_ NIL_
-%type <AST> KEYS_MEMBER SIZE_MEMBER CONST METHOD SELF
-%token <realV>   NUMBER
-%token <stringV> ID STRING
+%type 	<AST>	SinCode stmts
+%type 	<AST> stmt ifstmt loopstmt whilestmt forstmt foreach returnstmt block
+%type 	<AST> expr assignexpr term metaexpr metaparse metapreserve ternaryexpr 
+%type 	<AST> lvalue primary
+%type 	<AST> call objectdef funcdef valuefuncdef methodef const
+%type 	<AST> member
+%type 	<AST> elist
+%type 	<AST> normalcall
+%type 	<AST> elists
+%type 	<AST> objectlist objectlists
+%type 	<AST> stmtd
+%type 	<AST> idlist idlists
+%token	<AST> IF ELSE WHILE FOR DO IN FOREACH FUNCTION RETURN BREAK CONTINUE
+%token	<AST> ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
+%token	<AST> DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
+%token	<AST> LOCAL GLOBAL STATIC TRUE_ FALSE_ NIL_
+%token	<AST> KEYS_MEMBER SIZE_MEMBER CONST METHOD SELF
+%token	<realV>   NUMBER
+%token	<stringV> ID STRING
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -347,13 +347,13 @@ loopstmt:		whilestmt									{}
 				|	foreach									{}
 
 whilestmt:		WHILE										{ CREATE_NODE(While, "for", $1);					}
-				'(' expr									{ CREATE_NODE(WhileCodition, "WhileCodition", $3);	}
+				'(' expr									{ /*CREATE_NODE(WhileCodition, "WhileCodition", $3);*/	}
 				')' stmt									{}
 				;
 
 forstmt:		FOR											{ CREATE_NODE(For, "for", $1);						}
-				'(' elist									{ CREATE_NODE(ForInitList, "ForInitList", $3);		}
-				';' expr									{ CREATE_NODE(ForCodition, "ForCodition", $5);		}
+				'(' elist									{ /*CREATE_NODE(ForInitList, "ForInitList", $3);*/	}
+				';' expr									{ /*CREATE_NODE(ForCodition, "ForCodition", $5);*/		}
 				';' elist									{ CREATE_NODE(ForRepeatList, "ForRepeatList", $7);	}
 				')' stmt									{}
 				;
