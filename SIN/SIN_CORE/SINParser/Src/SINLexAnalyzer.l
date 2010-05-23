@@ -92,6 +92,9 @@ number			{digit}+(\.{digit}+)?
 "if"			{ return IF;		}
 "else"			{ return ELSE;		}
 "for"			{ return FOR;		}
+"foreach"		{ return FOREACH;	}
+"DO"			{ return DO;		}
+"IN"			{ return IN;		}
 "while"			{ return WHILE;		}
 "break"			{ return BREAK;		}
 "continue"		{ return CONTINUE;	}

@@ -61,7 +61,7 @@
 %start SinCode
 
 %type <AST>	SinCode stmts
-%type <AST> stmt ifstmt whilestmt forstmt returnstmt block
+%type <AST> stmt ifstmt loopstmt whilestmt forstmt foreach returnstmt block
 %type <AST> expr assignexpr term metaexpr metaparse metapreserve ternaryexpr 
 %type <AST> lvalue primary
 %type <AST> call objectdef funcdef valuefuncdef methodef const
@@ -72,7 +72,7 @@
 %type <AST> objectlist objectlists
 %type <AST> stmtd
 %type <AST> idlist idlists
-%type <AST> IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE
+%type <AST> IF ELSE WHILE FOR DO IN FOREACH FUNCTION RETURN BREAK CONTINUE
 %type <AST> ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
 %type <AST> DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
 %type <AST> LOCAL GLOBAL STATIC TRUE_ FALSE_ NIL_
@@ -115,9 +115,8 @@ stmts:			stmt stmts									{}
 
 
 stmt:			expr ';'									{}
+				|	loopstmt								{}
 				|	ifstmt									{}
-				|	whilestmt								{}
-				|	forstmt									{}
 				|	returnstmt								{}
 				|	BREAK ';'								{}
 				|	CONTINUE ';'							{}
@@ -335,6 +334,18 @@ ifstmt:			IF
 					ELSE stmt								{}
 				;
 
+returnstmt:		RETURN										{ CREATE_NODE(ReturnEmpty, "Return", $1);}
+				';'											{ }
+				|	RETURN									{ CREATE_NODE(ReturnExpr, "ReturnExpr", $1); }
+					expr ';' 								{ }
+				;
+
+/****************************  loops Stmts  ****************************/
+
+loopstmt:		whilestmt									{}
+				|	forstmt									{}
+				|	foreach									{}
+
 whilestmt:		WHILE										{ CREATE_NODE(While, "for", $1);					}
 				'(' expr									{ CREATE_NODE(WhileCodition, "WhileCodition", $3);	}
 				')' stmt									{}
@@ -347,12 +358,8 @@ forstmt:		FOR											{ CREATE_NODE(For, "for", $1);						}
 				')' stmt									{}
 				;
 
-returnstmt:		RETURN										{ CREATE_NODE(ReturnEmpty, "Return", $1);}
-				';'											{ }
-				|	RETURN									{ CREATE_NODE(ReturnExpr, "ReturnExpr", $1); }
-					expr ';' 								{ }
-				;
-
+foreach:		FOR lvalue IN expr stmt DO					{}
+				|	FOREACH '('lvalue ',' expr ')' stmt		{}
 %%
 
 int yyerror (char const* yaccProvidedMessage){
