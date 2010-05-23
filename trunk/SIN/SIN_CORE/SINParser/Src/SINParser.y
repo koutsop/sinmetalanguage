@@ -60,24 +60,24 @@
 
 %start SinCode
 
-%type 	<AST>	SinCode stmts
-%type 	<AST> stmt ifstmt loopstmt whilestmt forstmt foreach returnstmt block
-%type 	<AST> expr assignexpr term metaexpr metaparse metapreserve ternaryexpr 
-%type 	<AST> lvalue primary
-%type 	<AST> call objectdef funcdef valuefuncdef methodef const
-%type 	<AST> member
-%type 	<AST> elist
-%type 	<AST> normalcall
-%type 	<AST> elists
-%type 	<AST> objectlist objectlists
-%type 	<AST> stmtd
-%type 	<AST> idlist idlists
-%token	<AST> IF ELSE WHILE FOR DO IN FOREACH FUNCTION RETURN BREAK CONTINUE
-%token	<AST> ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
-%token	<AST> DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
-%token	<AST> LOCAL GLOBAL STATIC TRUE_ FALSE_ NIL_
-%token	<AST> KEYS_MEMBER SIZE_MEMBER CONST METHOD SELF
-%token	<realV>   NUMBER
+%type 	<AST>		SinCode stmts
+%type 	<AST> 		stmt ifstmt whilestmt forstmt foreachstmt returnstmt block ids
+%type 	<AST> 		expr assignexpr term metaexpr metaparse metapreserve ternaryexpr 
+%type 	<AST> 		lvalue primary
+%type 	<AST> 		call objectdef funcdef valuefuncdef methodef const
+%type 	<AST> 		member
+%type 	<AST> 		elist
+%type 	<AST> 		normalcall
+%type 	<AST> 		elists
+%type 	<AST> 		objectlist objectlists
+%type 	<AST> 		stmtd
+%type 	<AST> 		idlist idlists
+%token	<AST> 		IF ELSE WHILE FOR DO IN FOREACH FUNCTION RETURN BREAK CONTINUE
+%token	<AST> 		ASSIGN ADD MIN MUL DIV MOD EQ NOTEQ INCR DECR GT LT GE LE AND OR NOT 
+%token	<AST> 		DOT_LT GT_DOT DOT_TILDE DOT_EXCl_MARK DOT_AT DOT_HASH 
+%token	<AST> 		LOCAL GLOBAL STATIC TRUE_ FALSE_ NIL_
+%token	<AST> 		KEYS_MEMBER SIZE_MEMBER CONST METHOD SELF
+%token	<realV>		NUMBER
 %token	<stringV> ID STRING
 
 
@@ -115,8 +115,10 @@ stmts:			stmt stmts									{}
 
 
 stmt:			expr ';'									{}
-				|	loopstmt								{}
 				|	ifstmt									{}
+				|	forstmt									{}
+				|	foreachstmt								{}
+				|	whilestmt								{}
 				|	returnstmt								{}
 				|	BREAK ';'								{}
 				|	CONTINUE ';'							{}
@@ -206,14 +208,16 @@ const:			NUMBER 										{}
 				;
 
 
-lvalue:			ID 											{}
-				|	CONST	ID								{}
-				|	LOCAL	ID								{}
-				|	GLOBAL	ID								{}
-				|	STATIC	ID								{}
+lvalue:			ids											{}
 				|	SELF									{}
 				|	member									{}
 				;
+
+ids:			ID 											{}
+				|	CONST	ID								{}
+				|	LOCAL	ID								{}
+				|	GLOBAL	ID								{}
+				|	STATIC	ID								{}	
 
     
 member:			lvalue DOT ID								{}
@@ -342,15 +346,6 @@ returnstmt:		RETURN										{ CREATE_NODE(ReturnEmpty, "Return", $1);}
 
 /****************************  loops Stmts  ****************************/
 
-loopstmt:		whilestmt									{}
-				|	forstmt									{}
-				|	foreach									{}
-
-whilestmt:		WHILE										{ CREATE_NODE(While, "for", $1);					}
-				'(' expr									{ /*CREATE_NODE(WhileCodition, "WhileCodition", $3);*/	}
-				')' stmt									{}
-				;
-
 forstmt:		FOR											{ CREATE_NODE(For, "for", $1);						}
 				'(' elist									{ /*CREATE_NODE(ForInitList, "ForInitList", $3);*/	}
 				';' expr									{ /*CREATE_NODE(ForCodition, "ForCodition", $5);*/		}
@@ -358,8 +353,15 @@ forstmt:		FOR											{ CREATE_NODE(For, "for", $1);						}
 				')' stmt									{}
 				;
 
-foreach:		FOR lvalue IN expr stmt DO					{}
+foreachstmt:	FOR ids IN expr DO stmt 					{}
 				|	FOREACH '('lvalue ',' expr ')' stmt		{}
+
+
+whilestmt:		WHILE										{ CREATE_NODE(While, "for", $1);					}
+				'(' expr									{ /*CREATE_NODE(WhileCodition, "WhileCodition", $3);*/	}
+				')' stmt									{}
+				;
+
 %%
 
 int yyerror (char const* yaccProvidedMessage){
