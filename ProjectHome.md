@@ -1,0 +1,1 @@
+Small interpreted meta language. Untyped object-based with dynamically typed variables (like JavaScript).
